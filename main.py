@@ -3,11 +3,11 @@ import random
 
 #기본 상수 정의
 fps = 60                #게임의 fps
-screen_width = 1920     #창 너비
-screen_height = 1080    #창 높이
-field_width = 30        #게임판 너비
-field_height = 16       #게임판 높이
-mines = 99              #지뢰 갯수
+screen_width = 800     #창 너비
+screen_height = 600    #창 높이
+field_width = 9        #게임판 너비
+field_height = 9       #게임판 높이
+mines = 10              #지뢰 갯수
 tile_size = 36          #타일 크기
 #기본 상수 정의
 
@@ -163,7 +163,7 @@ def uncover(x, y):
     
 #게임 시작
 pygame.init()                           #pygame 라이브러리 초기화
-pygame.display.set_caption("지뢰찾기")  #창 제목 설정
+pygame.display.set_caption("minesweeper")  #창 제목 설정
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
@@ -192,7 +192,25 @@ while running:
                     color = white
                 pygame.draw.rect(screen, color, rect)
                 if(not isMine(x, y)):
-                    text = pygame.font.Font(None, 24).render(str(field[x][y]), True, black)
+                    text_color = black
+                    number = field[x][y]
+                    if(number == 1):
+                        text_color = blue
+                    elif(number == 2):
+                        text_color = bluegreen
+                    elif(number == 3):
+                        text_color = greenblue
+                    elif(number == 4):
+                        text_color = green
+                    elif(number == 5):
+                        text_color = greenred
+                    elif(number == 6):
+                        text_color = redgreen
+                    elif(number == 7):
+                        text_color = red
+                    elif(number == 8):
+                        text_color = black
+                    text = pygame.font.Font(None, 24).render(str(field[x][y]), True, text_color)
                     screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
 
     pygame.display.flip()
