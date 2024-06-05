@@ -3,17 +3,18 @@ import random
 
 #기본 상수 정의
 fps = 60                #게임의 fps
-screen_width = 800     #창 너비
-screen_height = 600    #창 높이
 field_width = 9        #게임판 너비
 field_height = 9       #게임판 높이
 mines = 10              #지뢰 갯수
 tile_size = 36          #타일 크기
+screen_width = tile_size * field_width     #창 너비
+screen_height = tile_size * field_height    #창 높이
 #기본 상수 정의
 
 #색상 정의
 black = (0, 0, 0)           #8
 white = (255, 255, 255)
+gray = (128, 128, 128)
 red = (255, 0, 0)           #7
 redgreen = (255, 170, 0)    #6
 greenred = (170, 255, 0)    #5
@@ -186,14 +187,12 @@ while running:
             if(field_cover[x][y]):
                 pygame.draw.rect(screen, white, rect)
             else:
-                if(isMine(x, y)):
-                    color = red
-                else:
-                    color = white
+                color = gray
                 pygame.draw.rect(screen, color, rect)
-                if(not isMine(x, y)):
-                    text_color = black
-                    number = field[x][y]
+                number = field[x][y]
+                if(isMine(x, y)):
+                    text = pygame.font.Font(None, 24).render(('X'), True, red)
+                if(number > 0 and not isMine(x, y)):
                     if(number == 1):
                         text_color = blue
                     elif(number == 2):
@@ -210,7 +209,8 @@ while running:
                         text_color = red
                     elif(number == 8):
                         text_color = black
-                    text = pygame.font.Font(None, 24).render(str(field[x][y]), True, text_color)
+                    text = pygame.font.Font(None, 24).render(str(number), True, text_color)
+                if(number != 0):
                     screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
 
     pygame.display.flip()
