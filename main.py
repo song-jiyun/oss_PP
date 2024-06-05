@@ -119,6 +119,13 @@ def gameover(success):
 #칸 열기
 def uncover(x, y):
     
+    #무한재귀 방지
+    if(field_cover[x][y] == 0):
+        return
+    #무한재귀 방지
+
+    field_cover[x][y] = 0
+
     #해당칸이 0이면 주변칸도 열어야 함
     if(field[x][y] == 0):
         if(x != 0):
@@ -151,8 +158,6 @@ def uncover(x, y):
         gameover(False)
     #해당칸이 지뢰면 게임오버
 
-    else:
-        field_cover[x][y] = 0
 #칸 열기
 
     
@@ -186,7 +191,7 @@ while running:
                 else:
                     color = white
                 pygame.draw.rect(screen, color, rect)
-                if(field[x][y] > 0 and (not isMine(x, y))):
+                if(not isMine(x, y)):
                     text = pygame.font.Font(None, 24).render(str(field[x][y]), True, black)
                     screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
 
