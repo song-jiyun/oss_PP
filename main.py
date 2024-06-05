@@ -8,6 +8,7 @@ screen_height = 1080    #창 높이
 field_width = 30        #게임판 너비
 field_height = 16       #게임판 높이
 mines = 99              #지뢰 갯수
+tile_size = 36          #타일 크기
 #기본 상수 정의
 
 #색상 정의
@@ -156,12 +157,45 @@ def uncover(x, y):
 
     
 #게임 시작
-pygame.init()
-#while True:
+pygame.init()                           #pygame 라이브러리 초기화
+pygame.display.set_caption("지뢰찾기")  #창 제목 설정
+screen = pygame.display.set_mode((screen_width, screen_height))
+clock = pygame.time.Clock()
+
 gameSetup()
 
-for x in range(0, field_width):
-    print(field[x])
+running = True
+while running:
+    for event in pygame.event.get():
+        if(event.type == pygame.QUIT):
+            running = False
+        elif(event.type == pygame.MOUSEBUTTONDOWN):
+            x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
+            if(0 <= x < field_width and 0 <= y < field_height):
+                uncover(x, y)
+
+    screen.fill(black)
+    for x in range(field_width):
+        for y in range(field_height):
+            rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+            if(field_cover[x][y]):
+                pygame.draw.rect(screen, white, rect)
+            else:
+                if(isMine(x, y)):
+                    color = red
+                else:
+                    color = white
+                pygame.draw.rect(screen, color, rect)
+                if(field[x][y] > 0 and (not isMine(x, y))):
+                    text = pygame.font.Font(None, 24).render(str(field[x][y]), True, black)
+                    screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
+
+    pygame.display.flip()
+    clock.tick(fps)
+
+
+#for x in range(0, field_width):
+#    print(field[x])
     
 #게임 종료
 pygame.quit()
