@@ -213,8 +213,22 @@ def gameWin():
     return True
 #승리 확인
 
+#################################
+#############PHASE2##############
+#################################
 
-    
+def level_select():
+    pygame.draw.rect(screen, black, (100, 60, 160, 60), 4)
+    pygame.draw.rect(screen, black, (100, 140, 160, 60), 4)
+    pygame.draw.rect(screen, black, (100, 220, 160, 60), 4)
+    screen.blit(easy_text, easy_rect)
+    screen.blit(medium_text, medium_rect)
+    screen.blit(hard_text, hard_rect)
+
+#################################
+#############PHASE2##############
+#################################
+   
 #게임 시작
 #pygame.init()                           #pygame 라이브러리 초기화
 pygame.display.set_caption("minesweeper")  #창 제목 설정
@@ -225,6 +239,23 @@ gameSetup()
 
 running = True
 while running:
+    #################################
+    #############PHASE2##############
+    #################################
+    if game_state == 1:
+        if screen_set == 0:
+            field_width = 9
+            field_height = 9
+            screen_width = field_width * tile_size
+            screen_height = field_height * tile_size
+            level_select()
+            screen = pygame.display.set_mode((screen_width, screen_height))
+            screen.fill(white)
+            screen_set = 1
+            level_select()
+    #################################
+    #############PHASE2##############
+    #################################
     for event in pygame.event.get():
         if(event.type == pygame.QUIT):
             running = False
