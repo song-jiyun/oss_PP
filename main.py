@@ -1,14 +1,6 @@
 import pygame
 import random
 
-#################################
-#############PHASE2##############
-#################################
-pygame.init()
-#################################
-#############PHASE2##############
-#################################
-
 #기본 상수 정의
 fps = 60                #게임의 fps
 field_width = 9        #게임판 너비
@@ -24,6 +16,8 @@ game_win = False
 #################################
 #############PHASE2##############
 #################################
+pygame.init()
+
 flag_mark = '|>'
 
 game_state = 1
@@ -276,11 +270,15 @@ def game_end():
     else:
         end_message_text = end_message_font.render("You LOSE!", True, black)
     end_message_rect = end_message_text.get_rect(center = (screen_width/2, screen_height/2))
-    restart_font = pygame.font.Font(None, 25)
+    restart_font = pygame.font.Font(None, 40)
     restart_text = restart_font.render("Restart : Enter", True, black)
-    restart_rect = restart_text.get_rect(center = (screen_width/2 , screen_height/2 + 80))
+    restart_rect = restart_text.get_rect(center = (screen_width/2 , screen_height/2 + 50))
+    quit_font = pygame.font.Font(None, 40)
+    quit_text = quit_font.render("Quit : Q", True, black)
+    quit_rect = quit_text.get_rect(center = (screen_width/2, screen_height/2 + 100))
     screen.blit(end_message_text, end_message_rect)
     screen.blit(restart_text, restart_rect)
+    screen.blit(quit_text, quit_rect)
 #################################
 #############PHASE2##############
 #################################
