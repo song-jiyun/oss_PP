@@ -114,7 +114,7 @@ def gameSetup():
     #################################
     #############PHASE2##############
     #################################
-    global game_state, mines, field_width, field_height, screen_height, screen_width
+    global field, field_cover, game_state, mines, field_width, field_height, screen_height, screen_width
     game_state = 0
     if level == 'e':
         field_width = 9
@@ -127,19 +127,27 @@ def gameSetup():
         field_height = 15
         screen_height = tile_size * field_height
         screen_width = tile_size * field_width
-        mines = 30
+        mines = 25
     elif level == 'h':
         field_width = 21
         field_height = 21
         screen_height = tile_size * field_height
         screen_width = tile_size * field_width
-        mines = 60
+        mines = 45
     screen = pygame.display.set_mode((screen_width, screen_height))
     screen.fill(white)
     #################################
     #############PHASE2##############
     #################################
     #게임판 0, 가림막 1로 초기화
+    #################################
+    #############PHASE2##############
+    #################################
+    field = []
+    field_cover = []
+    #################################
+    #############PHASE2##############
+    #################################
     for x in range(0, field_width):
         field.append([])
         field_cover.append([])
@@ -252,6 +260,25 @@ def level_select():
     screen.blit(medium_text, medium_rect)
     screen.blit(hard_text, hard_rect)
 
+def game_end():
+    for x in range(field_width):
+        for y in range(field_height):
+            if isMine(x, y):
+                mine = 'X'
+                color = red
+                text = pygame.font.Font(None, 24).render((mine), True, color)
+                screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
+    end_message_font = pygame.font.Font(None, 50)
+    if(game_win):
+        end_message_text = end_message_font.render("You WIN!", True, black)
+    else:
+        end_message_text = end_message_font.render("You LOSE!", True, black)
+    end_message_rect = end_message_text.get_rect(center = (screen_width/2, screen_height/2))
+    restart_font = pygame.font.Font(None, 25)
+    restart_text = restart_font.render("Restart : Enter", True, black)
+    restart_rect = restart_text.get_rect(center = (screen_width/2 , screen_height/2 + 80))
+    screen.blit(end_message_text, end_message_rect)
+    screen.blit(restart_text, restart_rect)
 #################################
 #############PHASE2##############
 #################################
@@ -273,17 +300,31 @@ while running:
             field_height = 9
             screen_width = field_width * tile_size
             screen_height = field_height * tile_size
-            level_select()
             screen = pygame.display.set_mode((screen_width, screen_height))
             screen.fill(white)
             screen_set = 1
             level_select()
+    elif game_over == True:
+        game_end()
     #################################
     #############PHASE2##############
     #################################
     for event in pygame.event.get():
         if(event.type == pygame.QUIT):
             running = False
+        #################################
+        #############PHASE2##############
+        #################################
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                if game_over == True:
+                     screen_set = 0
+                     game_state = 1
+                     game_over = False
+                     break
+        #################################
+        #############PHASE2##############
+        #################################
         elif(event.type == pygame.MOUSEBUTTONDOWN and not game_over):
             #################################
             #############PHASE2##############
@@ -320,7 +361,7 @@ while running:
              #############PHASE2##############
              #################################
 
-    if game_state == 0:
+    if game_state == 0 and game_over == False:
         for x in range(field_width):
             for y in range(field_height):
                 rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
