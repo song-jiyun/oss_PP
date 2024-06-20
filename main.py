@@ -262,8 +262,6 @@ pygame.display.set_caption("minesweeper")  #창 제목 설정
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
-gameSetup()
-
 running = True
 while running:
     #################################
