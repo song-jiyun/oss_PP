@@ -111,7 +111,34 @@ def countMine(x, y):
 
 #게임판 만들기
 def gameSetup():
-
+    #################################
+    #############PHASE2##############
+    #################################
+    global game_state, mines, field_width, field_height, screen_height, screen_width
+    game_state = 0
+    if level == 'e':
+        field_width = 9
+        field_height = 9
+        screen_height = tile_size * field_height
+        screen_width = tile_size * field_width
+        mines = 10
+    elif level == 'm':
+        field_width = 15
+        field_height = 15
+        screen_height = tile_size * field_height
+        screen_width = tile_size * field_width
+        mines = 30
+    elif level == 'h':
+        field_width = 21
+        field_height = 21
+        screen_height = tile_size * field_height
+        screen_width = tile_size * field_width
+        mines = 60
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    screen.fill(white)
+    #################################
+    #############PHASE2##############
+    #################################
     #게임판 0, 가림막 1로 초기화
     for x in range(0, field_width):
         field.append([])
@@ -260,6 +287,25 @@ while running:
         if(event.type == pygame.QUIT):
             running = False
         elif(event.type == pygame.MOUSEBUTTONDOWN and not game_over):
+            #################################
+            #############PHASE2##############
+            #################################
+            if game_state == 1:
+                x, y = event.pos[0], event.pos[1]
+                if 100 <= x < 260:
+                    if 60 <= y <=120:
+                        level = 'e'
+                        gameSetup()
+                    elif 140 <= y <= 200:
+                        level = 'm'
+                        gameSetup()
+                    elif 220 <= y <= 280:
+                        level = 'h'
+                        gameSetup()
+                continue
+            #################################
+            #############PHASE2##############
+            #################################
             x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
             if(0 <= x < field_width and 0 <= y < field_height):
             #################################
