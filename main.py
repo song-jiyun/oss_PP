@@ -263,7 +263,9 @@ def level_select():
 def game_end():
     for x in range(field_width):
         for y in range(field_height):
-            if isMine(x, y):
+            if isMine(x, y) and field_cover[x][y] != 2:
+                rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                pygame.draw.rect(screen, white, rect)
                 mine = 'X'
                 color = red
                 text = pygame.font.Font(None, 24).render((mine), True, color)
