@@ -26,6 +26,21 @@ game_win = False
 #################################
 flag_mark = '|>'
 
+game_state = 1
+# 0 == 게임 진행 중, 1 == 난이도 정하기, 2 == 다시 시작
+
+screen_set = 0
+# screen size 변경을 위한 변수
+# 0 = 변경 가능, 1 = 변경 불가
+
+level_font = pygame.font.Font(None, 30)
+easy_text = level_font.render("Easy", True, 30)
+easy_rect = easy_text.get_rect(center = (180 ,90))
+medium_text = level_font.render("Medium", True, 30)
+medium_rect = medium_text.get_rect(center = (180 ,170))
+hard_text = level_font.render("Hard", True, 30)
+hard_rect = hard_text.get_rect(center = (180 ,250))
+level = ""
 
 #################################
 #############PHASE2##############
