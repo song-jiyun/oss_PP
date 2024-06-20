@@ -1,6 +1,14 @@
 import pygame
 import random
 
+#################################
+#############PHASE2##############
+#################################
+pygame.init()
+#################################
+#############PHASE2##############
+#################################
+
 #기본 상수 정의
 fps = 60                #게임의 fps
 field_width = 9        #게임판 너비
@@ -12,6 +20,18 @@ screen_height = tile_size * field_height    #창 높이
 game_over = False
 game_win = False
 #기본 상수 정의
+
+#################################
+#############PHASE2##############
+#################################
+flag_mark = '|>'
+
+
+#################################
+#############PHASE2##############
+#################################
+
+
 
 #색상 정의
 black = (0, 0, 0)           #8
@@ -173,7 +193,7 @@ def gameWin():
 
     
 #게임 시작
-pygame.init()                           #pygame 라이브러리 초기화
+#pygame.init()                           #pygame 라이브러리 초기화
 pygame.display.set_caption("minesweeper")  #창 제목 설정
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
@@ -188,7 +208,19 @@ while running:
         elif(event.type == pygame.MOUSEBUTTONDOWN and not game_over):
             x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
             if(0 <= x < field_width and 0 <= y < field_height):
-                uncover(x, y)
+            #################################
+            #############PHASE2##############
+            #################################
+                if event.button == 1:
+                    uncover(x, y)
+                elif event.button == 3:
+                    if field_cover[x][y] == 1:
+                        field_cover[x][y] = 2
+                    elif field_cover[x][y] == 2:
+                        field_cover[x][y] = 1
+             #################################
+             #############PHASE2##############
+             #################################
 
     screen.fill(black)
     for x in range(field_width):
@@ -196,6 +228,16 @@ while running:
             rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
             if(field_cover[x][y]):
                 pygame.draw.rect(screen, white, rect)
+                #################################
+                #############PHASE2##############
+                #################################
+                if field_cover[x][y] == 2:
+                    pygame.draw.rect(screen, black, rect, 2)
+                    text = pygame.font.Font(None, 24).render((flag_mark), True, red)
+                    screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
+                #################################
+                #############PHASE2##############
+                #################################
             else:
                 color = gray
                 pygame.draw.rect(screen, color, rect)
