@@ -30,8 +30,8 @@ screen_set = 0
 level_font = pygame.font.Font(None, 30)
 easy_text = level_font.render("Easy", True, 30)
 easy_rect = easy_text.get_rect(center = (180 ,90))
-medium_text = level_font.render("Medium", True, 30)
-medium_rect = medium_text.get_rect(center = (180 ,170))
+normal_text = level_font.render("Normal", True, 30)
+normal_rect = normal_text.get_rect(center = (180 ,170))
 hard_text = level_font.render("Hard", True, 30)
 hard_rect = hard_text.get_rect(center = (180 ,250))
 level = ""
@@ -251,7 +251,7 @@ def open_option():
         option_font = pygame.font.Font(None, 32)
         block_x_size = 200 
         block_y_size = 70
-    elif level == 'm':
+    elif level == 'n':
         option_font = pygame.font.Font(None, 48)
         block_x_size = 280
         block_y_size = 120
@@ -278,7 +278,7 @@ def level_select():
     pygame.draw.rect(screen, black, (100, 140, 160, 60), 4)
     pygame.draw.rect(screen, black, (100, 220, 160, 60), 4)
     screen.blit(easy_text, easy_rect)
-    screen.blit(medium_text, medium_rect)
+    screen.blit(normal_text, normal_rect)
     screen.blit(hard_text, hard_rect)
 
 def game_end():
@@ -435,7 +435,7 @@ while running:
                         level = 'e'
                         gameSetup()
                     elif 140 <= y <= 200:
-                        level = 'm'
+                        level = 'n'
                         gameSetup()
                     elif 220 <= y <= 280:
                         level = 'h'
