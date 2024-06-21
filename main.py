@@ -25,11 +25,19 @@ green = (0, 255, 0)         #4
 greenblue = (0, 255, 170)   #3
 bluegreen = (0, 170, 255)   #2
 blue = (0, 0, 255)          #1
+yellow = (255, 255, 0)
 #색상 정의
 
 #게임판
 field = []          #숫자와 지뢰의 위치정보, 0~8은 주변칸의 지뢰 갯수, 9는 지뢰
 field_cover = []    #가림막 정보, 0은 공개된 위치, 1은 가려진 위치
+########################################
+############## phase 2_2 ###############
+########################################
+field_flags = []    # 깃발 정보, 0은 깃발 없는 기본 상태, 1은 깃발 있는 상태
+########################################
+############## phase 2_1 ###############
+########################################
 #게임판
 
 #해당 칸의 지뢰 여부 판별
@@ -82,9 +90,23 @@ def gameSetup():
     for x in range(0, field_width):
         field.append([])
         field_cover.append([])
+        ########################################
+        ############## phase 2_2 ###############
+        ########################################
+        field_flags.append([])
+        ########################################
+        ############## phase 2_2 ###############
+        ########################################
         for y in range(0, field_height):
             field[x].append(0)
             field_cover[x].append(1)
+            ########################################
+            ############## phase 2_2 ###############
+            ########################################
+            field_flags[x].append(0)
+            ########################################
+            ############## phase 2_2 ###############
+            ########################################
     #게임판 0, 가림막 1로 초기화
 
     #지뢰 위치 설정
@@ -159,8 +181,21 @@ def uncover(x, y):
     elif(isMine(x, y)):
         gameover(False)
     #해당칸이 지뢰면 게임오버
-
 #칸 열기
+
+########################################
+############## phase 2_2 ###############
+########################################
+# 깃발 토글
+def toggleFlag(x, y):
+    if field_cover[x][y] == 1:
+        if field_flags[x][y] == 0:
+            field_flags[x][y] = 1
+        else:
+            field_flags[x][y] = 0
+########################################
+############## phase 2_2 ###############
+########################################
 
 #승리 확인
 def gameWin():
@@ -195,14 +230,33 @@ while running:
         elif(event.type == pygame.MOUSEBUTTONDOWN and not game_over):
             x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
             if(0 <= x < field_width and 0 <= y < field_height):
-                uncover(x, y)
+                ########################################
+                ############## phase 2_2 ###############
+                ########################################
+                if event.button == 1:  # 좌클릭
+                    uncover(x, y)
+                elif event.button == 3:  # 우클릭
+                    toggleFlag(x, y)
+                ########################################
+                ############## phase 2_2 ###############
+                ########################################
 
     screen.fill(black)
     for x in range(field_width):
         for y in range(field_height):
             rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-            if(field_cover[x][y]):
+            ########################################
+            ############## phase 2_2 ###############
+            ########################################
+            if field_flags[x][y] == 1:  # 깃발 표시
+                pygame.draw.rect(screen, yellow, rect)
+                flag_text = pygame.font.Font(None, 24).render('F', True, black)
+                screen.blit(flag_text, (x * tile_size + 12, y * tile_size + 8))
+            elif field_cover[x][y]:
                 pygame.draw.rect(screen, white, rect)
+            ########################################
+            ############## phase 2_2 ###############
+            ########################################
             else:
                 color = gray
                 pygame.draw.rect(screen, color, rect)
