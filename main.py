@@ -21,7 +21,7 @@ pygame.init()
 flag_mark = '|>'
 
 game_state = 1
-# 0 == 게임 진행 중, 1 == 난이도 정하기, 2 == 다시 시작
+# 0 == 게임 진행 중, 1 == 난이도 정하기, 2 == 설정창
 
 screen_set = 0
 # screen size 변경을 위한 변수
@@ -35,6 +35,10 @@ medium_rect = medium_text.get_rect(center = (180 ,170))
 hard_text = level_font.render("Hard", True, 30)
 hard_rect = hard_text.get_rect(center = (180 ,250))
 level = ""
+
+block_x_size = 0
+block_y_size = 0
+
 
 #################################
 #############PHASE2##############
@@ -122,7 +126,7 @@ def gameSetup():
         screen_height = tile_size * field_height
         screen_width = tile_size * field_width
         mines = 25
-    elif level == 'h':
+    else:
         field_width = 21
         field_height = 21
         screen_height = tile_size * field_height
@@ -240,7 +244,35 @@ def gameWin():
 #################################
 #############PHASE2##############
 #################################
-
+def open_option():
+    global block_x_size, block_y_size
+    screen.fill(white)
+    if level == 'e':
+        option_font = pygame.font.Font(None, 32)
+        block_x_size = 200 
+        block_y_size = 70
+    elif level == 'm':
+        option_font = pygame.font.Font(None, 48)
+        block_x_size = 280
+        block_y_size = 120
+    else:
+        option_font = pygame.font.Font(None, 64)
+        block_x_size = 360
+        block_y_size = 200
+    
+    block_y_padding = (screen_height - 3*block_y_size)/4
+    restart_op_text = option_font.render("RESTART", True, black)
+    restart_op_rect = restart_op_text.get_rect(center = (screen_width/2, block_y_padding + block_y_size/2))
+    level_op_text = option_font.render("SELECT LEVEL", True, black)
+    level_op_rect = level_op_text.get_rect(center = (screen_width/2, screen_height/2))
+    resume_op_text = option_font.render("RESUME", True, black)
+    resume_op_rect = resume_op_text.get_rect(center = (screen_width/2, screen_height - block_y_padding - block_y_size/2))
+    pygame.draw.rect(screen, black, (screen_width/2 - block_x_size/2, block_y_padding, block_x_size, block_y_size), 4) 
+    pygame.draw.rect(screen, black, (screen_width/2 - block_x_size/2, screen_height/2 - block_y_size/2, block_x_size, block_y_size), 4) 
+    pygame.draw.rect(screen, black, (screen_width/2 - block_x_size/2, screen_height - block_y_padding - block_y_size, block_x_size, block_y_size), 4) 
+    screen.blit(restart_op_text, restart_op_rect)
+    screen.blit(level_op_text, level_op_rect)
+    screen.blit(resume_op_text, resume_op_rect)
 def level_select():
     pygame.draw.rect(screen, black, (100, 60, 160, 60), 4)
     pygame.draw.rect(screen, black, (100, 140, 160, 60), 4)
@@ -296,8 +328,6 @@ def check_flag():
                         uncover(x, y-1)
                     if y != field_height - 1:
                         uncover(x, y+1)
- 
-            
 
 def around_flag_num(x, y):
     flag_num = 0
@@ -366,12 +396,19 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if game_over == True:
                 if event.key == pygame.K_RETURN:
-                     screen_set = 0
-                     game_state = 1
-                     game_over = False
-                     break
+                    screen_set = 0
+                    game_state = 1
+                    game_over = False
+                    break
                 elif event.unicode.upper() == 'Q':
                     running = False
+            elif game_over == False:
+                if event.key == pygame.K_ESCAPE:
+                    if game_state == 0:
+                        game_state = 2
+                        open_option()
+                    elif game_state == 2:
+                        game_state = 0
         #################################
         #############PHASE2##############
         #################################
@@ -379,8 +416,20 @@ while running:
             #################################
             #############PHASE2##############
             #################################
-            if game_state == 1:
-                x, y = event.pos[0], event.pos[1]
+            x, y = event.pos[0], event.pos[1]
+            
+            if game_state == 2:
+                block_y_padding = (screen_height - 3*block_y_size)/4
+                if screen_width/2 - block_x_size/2 <= x <= screen_width/2 + block_x_size/2:
+                    if block_y_padding <= y <= block_y_padding + block_y_size:
+                        game_state = 0
+                        gameSetup()
+                    elif screen_height/2 - block_y_size/2 <= y <= screen_height/2 + block_y_size/2:
+                        game_state = 1;
+                        screen_set = 0
+                    elif screen_height - block_y_padding - block_y_size <= y <= screen_height - block_y_padding:
+                        game_state = 0;
+            elif game_state == 1:
                 if 100 <= x < 260:
                     if 60 <= y <=120:
                         level = 'e'
@@ -392,26 +441,21 @@ while running:
                         level = 'h'
                         gameSetup()
                 continue
+            elif game_state == 0:
+                x, y = x // tile_size, y // tile_size
+                if(0 <= x < field_width and 0 <= y < field_height):
+                    if event.button == 1:
+                        uncover(x, y)
+                    elif event.button == 2:
+                        check_flag()
+                    elif event.button == 3:
+                        if field_cover[x][y] == 1:
+                            field_cover[x][y] = 2
+                        elif field_cover[x][y] == 2:
+                            field_cover[x][y] = 1
             #################################
             #############PHASE2##############
             #################################
-            x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
-            if(0 <= x < field_width and 0 <= y < field_height):
-            #################################
-            #############PHASE2##############
-            #################################
-                if event.button == 1:
-                    uncover(x, y)
-                elif event.button == 2:
-                    check_flag()
-                elif event.button == 3:
-                    if field_cover[x][y] == 1:
-                        field_cover[x][y] = 2
-                    elif field_cover[x][y] == 2:
-                        field_cover[x][y] = 1
-             #################################
-             #############PHASE2##############
-             #################################
 
     if game_state == 0 and game_over == False:
         for x in range(field_width):
