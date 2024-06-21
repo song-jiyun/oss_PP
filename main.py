@@ -120,7 +120,7 @@ def gameSetup():
         screen_height = tile_size * field_height
         screen_width = tile_size * field_width
         mines = 10
-    elif level == 'm':
+    elif level == 'n':
         field_width = 15
         field_height = 15
         screen_height = tile_size * field_height
