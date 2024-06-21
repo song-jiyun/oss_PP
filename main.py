@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 #기본 상수 정의
 fps = 60                #게임의 fps
@@ -170,8 +171,14 @@ def gameWin():
     return True
 #승리 확인
 
+########################################
+############## phase 2_1 ###############
+########################################
+start_ticks = pygame.time.get_ticks()
+########################################
+############## phase 2_1 ###############
+########################################
 
-    
 #게임 시작
 pygame.init()                           #pygame 라이브러리 초기화
 pygame.display.set_caption("minesweeper")  #창 제목 설정
@@ -231,6 +238,16 @@ while running:
 
     if(gameWin()):
         gameover(True)
+
+########################################
+############## phase 2_1 ###############
+########################################
+    elapsed_seconds = (pygame.time.get_ticks() - start_ticks) // 1000
+    timer_text = pygame.font.Font(None, 36).render(f'Time: {elapsed_seconds}', True, black)
+    screen.blit(timer_text, (screen_width - 150, 10))
+########################################
+############## phase 2_1 ###############
+########################################
 
     pygame.display.flip()
     clock.tick(fps)
