@@ -13,8 +13,6 @@ game_over = False
 game_win = False
 #기본 상수 정의
 
-
-
 #색상 정의
 black = (0, 0, 0)           #8
 white = (255, 255, 255)
@@ -78,6 +76,7 @@ def countMine(x, y):
 
 #게임판 만들기
 def gameSetup():
+
     #게임판 0, 가림막 1로 초기화
     for x in range(0, field_width):
         field.append([])
@@ -120,6 +119,7 @@ def gameover(win):
 
 #칸 열기
 def uncover(x, y):
+    
     #무한재귀 방지
     if(field_cover[x][y] == 0):
         return
@@ -169,12 +169,16 @@ def gameWin():
                 return False
     return True
 #승리 확인
-   
+
+
+    
 #게임 시작
-#pygame.init()                           #pygame 라이브러리 초기화
+pygame.init()                           #pygame 라이브러리 초기화
 pygame.display.set_caption("minesweeper")  #창 제목 설정
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
+
+gameSetup()
 
 running = True
 while running:
@@ -182,48 +186,51 @@ while running:
         if(event.type == pygame.QUIT):
             running = False
         elif(event.type == pygame.MOUSEBUTTONDOWN and not game_over):
+            x, y = event.pos[0] // tile_size, event.pos[1] // tile_size
+            if(0 <= x < field_width and 0 <= y < field_height):
+                uncover(x, y)
 
-    if game_state == 0 and game_over == False:
-        for x in range(field_width):
-            for y in range(field_height):
-                rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                if(field_cover[x][y]):
-                    pygame.draw.rect(screen, white, rect)
-                else:
-                    color = gray
-                    pygame.draw.rect(screen, color, rect)
-                    number = field[x][y]
-                    if(isMine(x, y)):
-                        if(game_win):
-                            mine = 'O'
-                            color = white
-                        else:
-                            mine = 'X'
-                            color = red
-                        text = pygame.font.Font(None, 24).render((mine), True, color)
-                    if(number > 0 and not isMine(x, y)):
-                        if(number == 1):
-                            text_color = blue
-                        elif(number == 2):
-                            text_color = bluegreen
-                        elif(number == 3):
-                            text_color = greenblue
-                        elif(number == 4):
-                            text_color = green
-                        elif(number == 5):
-                            text_color = greenred
-                        elif(number == 6):
-                            text_color = redgreen
-                        elif(number == 7):
-                            text_color = red
-                        elif(number == 8):
-                            text_color = black
-                        text = pygame.font.Font(None, 24).render(str(number), True, text_color)
-                    if(number != 0):
-                        screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
+    screen.fill(black)
+    for x in range(field_width):
+        for y in range(field_height):
+            rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+            if(field_cover[x][y]):
+                pygame.draw.rect(screen, white, rect)
+            else:
+                color = gray
+                pygame.draw.rect(screen, color, rect)
+                number = field[x][y]
+                if(isMine(x, y)):
+                    if(game_win):
+                        mine = 'O'
+                        color = white
+                    else:
+                        mine = 'X'
+                        color = red
+                    text = pygame.font.Font(None, 24).render((mine), True, color)
+                if(number > 0 and not isMine(x, y)):
+                    if(number == 1):
+                        text_color = blue
+                    elif(number == 2):
+                        text_color = bluegreen
+                    elif(number == 3):
+                        text_color = greenblue
+                    elif(number == 4):
+                        text_color = green
+                    elif(number == 5):
+                        text_color = greenred
+                    elif(number == 6):
+                        text_color = redgreen
+                    elif(number == 7):
+                        text_color = red
+                    elif(number == 8):
+                        text_color = black
+                    text = pygame.font.Font(None, 24).render(str(number), True, text_color)
+                if(number != 0):
+                    screen.blit(text, (x * tile_size + 12, y * tile_size + 8))
 
-        if(gameWin()):
-            gameover(True)
+    if(gameWin()):
+        gameover(True)
 
     pygame.display.flip()
     clock.tick(fps)
