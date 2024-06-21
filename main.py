@@ -130,18 +130,13 @@ def gameSetup():
         mines = 45
     screen = pygame.display.set_mode((screen_width, screen_height))
     screen.fill(white)
-    #################################
-    #############PHASE2##############
-    #################################
-    #게임판 0, 가림막 1로 초기화
-    #################################
-    #############PHASE2##############
-    #################################
+    
     field = []
     field_cover = []
     #################################
     #############PHASE2##############
     #################################
+    #게임판 0, 가림막 1로 초기화
     for x in range(0, field_width):
         field.append([])
         field_cover.append([])
@@ -269,16 +264,69 @@ def game_end():
         end_message_text = end_message_font.render("You WIN!", True, black)
     else:
         end_message_text = end_message_font.render("You LOSE!", True, black)
-    end_message_rect = end_message_text.get_rect(center = (screen_width/2, screen_height/2))
+    end_message_rect = end_message_text.get_rect(center = (screen_width/2, screen_height/2 - 20))
     restart_font = pygame.font.Font(None, 40)
     restart_text = restart_font.render("Restart : Enter", True, black)
-    restart_rect = restart_text.get_rect(center = (screen_width/2 , screen_height/2 + 50))
+    restart_rect = restart_text.get_rect(center = (screen_width/2 , screen_height/2 + 50 - 20))
     quit_font = pygame.font.Font(None, 40)
     quit_text = quit_font.render("Quit : Q", True, black)
-    quit_rect = quit_text.get_rect(center = (screen_width/2, screen_height/2 + 100))
+    quit_rect = quit_text.get_rect(center = (screen_width/2, screen_height/2 + 80 - 20))
     screen.blit(end_message_text, end_message_rect)
     screen.blit(restart_text, restart_rect)
     screen.blit(quit_text, quit_rect)
+
+def check_flag():
+    for x in range(field_width):
+        for y in range(field_height):
+            if field_cover[x][y] == 0 and 0 < field[x][y] < 9:
+                if around_flag_num(x, y) == field[x][y]:
+                    if x != 0:
+                        uncover(x-1, y)
+                        if y != 0:
+                            uncover(x-1, y-1)
+                        if y != field_height-1:
+                            uncover(x-1, y+1)
+                    if x != field_width-1:
+                        uncover(x+1, y)
+                        if y != 0:
+                            uncover(x+1, y-1)
+                        if y != field_height-1:
+                            uncover(x+1, y+1)
+                    if y != 0:
+                        uncover(x, y-1)
+                    if y != field_height - 1:
+                        uncover(x, y+1)
+ 
+            
+
+def around_flag_num(x, y):
+    flag_num = 0
+    if x != 0:
+        if field_cover[x-1][y] == 2:
+        	flag_num += 1
+        if y != 0:
+            if field_cover[x-1][y-1] == 2:
+                flag_num += 1
+        if y != field_height-1:
+            if field_cover[x-1][y+1] == 2:
+                flag_num += 1 
+    if x != field_width-1:
+        if field_cover[x+1][y] == 2:
+            flag_num += 1
+        if y != 0:
+            if field_cover[x+1][y-1] == 2:
+                flag_num += 1
+        if y != field_height-1:
+            if field_cover[x+1][y+1] == 2:
+                flag_num += 1
+    if y != 0:
+        if field_cover[x][y-1] == 2:
+            flag_num += 1
+    if y != field_height - 1:
+        if field_cover[x][y+1] == 2:
+            flag_num += 1
+    return flag_num
+    
 #################################
 #############PHASE2##############
 #################################
@@ -316,12 +364,14 @@ while running:
         #############PHASE2##############
         #################################
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                if game_over == True:
+            if game_over == True:
+                if event.key == pygame.K_RETURN:
                      screen_set = 0
                      game_state = 1
                      game_over = False
                      break
+                elif event.unicode.upper() == 'Q':
+                    running = False
         #################################
         #############PHASE2##############
         #################################
@@ -352,6 +402,8 @@ while running:
             #################################
                 if event.button == 1:
                     uncover(x, y)
+                elif event.button == 2:
+                    check_flag()
                 elif event.button == 3:
                     if field_cover[x][y] == 1:
                         field_cover[x][y] = 2
